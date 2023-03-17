@@ -1,14 +1,15 @@
 /* global BigInt */
 import React, { useEffect, useState } from "react";
 import useAlchemy from "../hooks/useAlchemy";
-
 import { useNavigate } from "react-router-dom";
+import { BiLoaderCircle } from "react-icons/bi";
 const Home = () => {
   const alchemy = useAlchemy();
   const navigate = useNavigate();
   const [blockNumber, setBlockNumber] = useState();
   const [isLoading, setIsLoading] = useState(true);
   const [balance, setBalance] = useState(0);
+  const [isBalanceLoading, setIsBalanceLoading] = useState(false);
   useEffect(() => {
     setIsLoading(true);
     async function getBlockNumber() {
@@ -17,29 +18,48 @@ const Home = () => {
     }
     getBlockNumber();
   }, [alchemy]);
-  const fetchBalance = async(e) => {
+  const fetchBalance = async (e) => {
     const address = e.target.value;
-    try{
+    setIsBalanceLoading(true);
+    setBalance(0);
+    try {
       const bal = await alchemy.core.getBalance(address, "latest");
       console.log(bal);
       setBalance(BigInt(bal).toString(10));
-    }
-    catch(e){
+    } catch (e) {
       console.log(e);
     }
-  }
+    setIsBalanceLoading(false);
+  };
   return (
-    <div className="min-h-screen bg-gray-700">
-      <div>
-        Enter user's account address
-        <input onChange={fetchBalance} type="text" className="rounded p-3"></input>
-        <div className="text-white">{balance}</div>
+    <div className="min-h-screen bg-gray-700 flex flex-col">
+      <div className="flex justify-center items-center gap-10 flex-wrap">
+        <div className="px-8 pt-8 items-center justify-center text-white flex">
+          Enter user's account address
+          <input
+            onBlur={fetchBalance}
+            type="text"
+            className="rounded m-4 p-3 text-black"
+          ></input>
+          {isBalanceLoading ? (
+            <div className="mb-4">
+              <BiLoaderCircle
+                className="text-gray-400 mx-auto w-32 h-32 object-cover animate-pulse"
+                alt="loading"
+              />
+            </div>
+          ) : (
+            <div className="text-white mb-4 flex items-center justify-center">
+              {balance} wei
+            </div>
+          )}
+        </div>
       </div>
       {isLoading ? (
         <div className="text-white">Loading</div>
       ) : (
         <div className="text-white">
-          <p>Current Block Number: {blockNumber}</p>
+          <p className="mx-auto w-fit">Current Block Number: {blockNumber}</p>
           <div>
             {[...Array(10)].map((x, i) => {
               return (

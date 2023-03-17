@@ -1,31 +1,28 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
+import { Navbar } from "./context/Navbar";
+import NFT from "./pages/NFT";
 import Block from "./pages/Block";
 import Home from "./pages/Home";
 import Transaction from "./pages/Transaction";
 import Transactions from "./pages/Transactions";
+import User from "./pages/User";
 
-
-// Refer to the README doc for more information about using API
-// keys in client-side code. You should never do this in production
-// level code.
-
-// In this week's lessons we used ethers.js. Here we are using the
-// Alchemy SDK is an umbrella library with several different packages.
-//
-// You can read more about the packages here:
-//   https://docs.alchemy.com/reference/alchemy-sdk-api-surface-overview#api-surface
-
-function App() {  
+function App() {
   return (
-    <div className="App">
+    <div className="bg-gray-700">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/block/:blockNumber" element={<Block />} />
-          <Route path="/block/:blockNumber/txns" element={<Transactions />} />
-          <Route path="/txn/:hash" element={<Transaction />} />
-        </Routes>
+        <Navbar />
+        <div className="pt-24">
+          <Routes>
+            <Route path="/block/:blockNumber" element={<Block />} />
+            <Route path="/block/:blockNumber/txns" element={<Transactions />} />
+            <Route path="/user/:address" element={<User />} />
+            <Route path="/txn/:hash" element={<Transaction />} />
+            <Route path="/nft" element={<NFT />} />
+            <Route path="/" element={<Home />} />
+          </Routes>
+        </div>
       </BrowserRouter>
     </div>
   );
